@@ -1,4 +1,5 @@
 import { ICanvas } from "../../gfx/ICanvas";
+import { IShapeStrategy } from "./strategies/IShapeStrategy";
 
 interface IShape {
     performDraw(canvas: ICanvas): void;
@@ -7,6 +8,8 @@ interface IShape {
     changeColor(color: string): void
 
     get id(): string
+    set shapeStrategy(strategy: IShapeStrategy)
+    get shapeStrategy(): IShapeStrategy
 }
 
 export {IShape}

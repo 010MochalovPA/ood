@@ -7,15 +7,13 @@ enum Event {
 }
 
 class App {
-    private _picture = new Picture();
-    private _canvas = new HTMLCanvas();
-    private _controller = new ShapesController(this._picture, this._canvas);
+    private _controller = new ShapesController(new Picture(), new HTMLCanvas());
 
-    constructor(private _input: HTMLInputElement) {}
+    constructor(private _input: HTMLInputElement) {};
 
     public init() {
         this._input.addEventListener(Event.CHANGE, () => {
-            const command = this._input.value.trim()
+            const command = this._input.value.trim();
 
             if (command) {
                 try {

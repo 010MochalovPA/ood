@@ -1,6 +1,5 @@
 import { IShape } from "./shapes/IShape";
 import { ICanvas } from "../gfx/ICanvas";
-import { MoveArguments } from "../types";
 
 type ShapesMap = Map<string, IShape>
 
