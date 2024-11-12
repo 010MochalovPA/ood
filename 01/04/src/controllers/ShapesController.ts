@@ -218,14 +218,14 @@ export class ShapesController {
         const shapes = this._picture.list();
 
         if (shapes.size === 0) {
-            console.log('Нет фигур!')
+            console.log('Нет фигур!');
             return;
         }
 
         Array.from(shapes).forEach(
             ([, shape], index) => {
-            console.log(`${index + 1} ${shape.performToString()}`);
-          }
+                console.log(`${index + 1} ${shape.performToString()}`);
+            }
         );
     }
 }

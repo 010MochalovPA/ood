@@ -21,7 +21,7 @@ class App {
                     this._input.value = '';
                 }
                 catch (e) {
-                    console.error(e)
+                    console.error(e);
                 }
             }
         })

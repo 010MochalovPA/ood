@@ -6,15 +6,15 @@ interface IShape {
     performToString(): string
     performMove(dx: number, dy: number): void;
 
-    set color(color: string)
+    set color(color: string);
 
-    get color(): string
+    get color(): string;
 
-    set shapeStrategy(strategy: IShapeStrategy)
+    set shapeStrategy(strategy: IShapeStrategy);
 
-    get shapeStrategy(): IShapeStrategy
+    get shapeStrategy(): IShapeStrategy;
 
-    get id(): string
+    get id(): string;
 }
 
-export {IShape}
+export { IShape };

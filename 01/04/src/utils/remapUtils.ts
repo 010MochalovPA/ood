@@ -7,7 +7,7 @@ function remapShapeArguments(args: string[]): DetailedShapeOptions {
     const validatedId: string = validateId(id);
     const validatedColor: string = validateColor(color);
     const validatedType: ShapeType = validateShapeType(type);
-    const validatedOptions: SpecificShapeOptions = validateOptions(validatedType, options)
+    const validatedOptions: SpecificShapeOptions = validateOptions(validatedType, options);
 
     return {
         id: validatedId,
@@ -22,7 +22,7 @@ function remapChangeShapeArguments(args: string[]): DetailedChangeShapeOptions {
 
     const validatedId: string = validateId(id);
     const validatedType: ShapeType = validateShapeType(type);
-    const validatedOptions: SpecificShapeOptions = validateOptions(validatedType, options)
+    const validatedOptions: SpecificShapeOptions = validateOptions(validatedType, options);
 
     return {
         id: validatedId,

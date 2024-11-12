@@ -37,7 +37,7 @@ class Shape implements IShape {
     }
 
     get color(): string {
-        return this._shapeStrategy.color
+        return this._shapeStrategy.color;
     }
 }
 
