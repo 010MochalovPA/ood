@@ -1,7 +1,6 @@
 import { IShapeStrategy } from "./IShapeStrategy";
 import { ICanvas } from "../../../gfx/ICanvas";
 import { Point } from "../../../types";
-import { Shape } from "../Shape";
 import { movePoint } from "../../../utils/shapeUtils";
 
 class CircleShapeStrategy implements IShapeStrategy {
@@ -21,7 +20,15 @@ class CircleShapeStrategy implements IShapeStrategy {
     }
 
     public toString(): string {
-        return `${this._point.x} ${this._point.y} ${this._radius}`;
+        return `circle ${this._color} ${this._point.x} ${this._point.y} ${this._radius}`;
+    }
+
+    get color(): string {
+        return this._color;
+    }
+ 
+    set color(color: string) {
+        this._color = color;
     }
 }
 

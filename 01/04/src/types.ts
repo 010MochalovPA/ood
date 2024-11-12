@@ -22,6 +22,11 @@ type ShapeBaseOptions = {
     color: string,
 }
 
+type ChangeShapeBaseOptions = {
+    id: string,
+    type: ShapeType,
+}
+
 type RectangleOptions = {
     point: Point,
     size: Size,
@@ -57,12 +62,19 @@ type SpecificShapeOptions = LineOptions
 
 type ShapeOptions<T> = ShapeBaseOptions & T;
 
+type ChangeShapeOptions<T> = ChangeShapeBaseOptions & T;
+
 type DetailedShapeOptions = ShapeOptions<TextOptions>
     | ShapeOptions<LineOptions>
     | ShapeOptions<TriangleOptions>
     | ShapeOptions<CircleOptions>
     | ShapeOptions<RectangleOptions>;
 
+type DetailedChangeShapeOptions = ChangeShapeOptions<TextOptions>
+    | ChangeShapeOptions<LineOptions>
+    | ChangeShapeOptions<TriangleOptions>
+    | ChangeShapeOptions<CircleOptions>
+    | ChangeShapeOptions<RectangleOptions>;
 
 type MoveShapeArguments = {
     id: string,
@@ -99,6 +111,8 @@ export type {
     MoveArguments,
     IdArguments,
     ChangeColorArguments,
+    DetailedChangeShapeOptions,
+    ChangeShapeOptions,
 }
 
 export {

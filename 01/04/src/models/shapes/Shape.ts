@@ -2,12 +2,10 @@ import { IShapeStrategy } from "./strategies/IShapeStrategy";
 import { ICanvas } from "../../gfx/ICanvas";
 import { IShape } from "./IShape";
 
-abstract class Shape implements IShape {
-    protected _shapeStrategy: IShapeStrategy;
-
+class Shape implements IShape {
     constructor(
-        protected _id: string,
-        protected _color: string,
+        private _id: string,
+        private _shapeStrategy: IShapeStrategy,
     ) {}
 
     get id(): string {
@@ -26,14 +24,20 @@ abstract class Shape implements IShape {
         this._shapeStrategy.draw(canvas);
     }
 
-    abstract performToString(): string;
+    public performToString(): string {
+        return `${this._id} ${this._shapeStrategy.toString()}`;
+    }
 
     public performMove(dx: number, dy: number): void {
         this.shapeStrategy.move(dx, dy);
     }
 
-    public changeColor(color: string): void {
-        this._color = color;
+    set color(color: string) {
+        this._shapeStrategy.color = color;
+    }
+
+    get color(): string {
+        return this._shapeStrategy.color
     }
 }
 

@@ -1,12 +1,13 @@
 import { ICanvas } from '../gfx/ICanvas';
 import { Picture } from '../models/Picture';
-import { Circle } from '../models/shapes/Circle';
-import { Line } from '../models/shapes/Line';
-import { Text } from '../models/shapes/Text';
-import { Rectangle } from '../models/shapes/Rectangle';
-import { Triangle } from '../models/shapes/Triangle';
-import { ChangeColorArguments, CircleOptions, DetailedShapeOptions, IdArguments, LineOptions, MoveArguments, MoveShapeArguments, RectangleOptions,  ShapeOptions,  ShapeType, TextOptions, TriangleOptions } from '../types';
-import { remapChangeColorArguments, remapIdArguments, remapMoveArguments, remapMoveShapeArguments, remapShapeArguments } from '../utils/remapUtils';
+import { ChangeColorArguments, ChangeShapeOptions, CircleOptions, DetailedChangeShapeOptions, DetailedShapeOptions, IdArguments, LineOptions, MoveArguments, MoveShapeArguments, RectangleOptions,  ShapeOptions,  ShapeType, TextOptions, TriangleOptions } from '../types';
+import { remapChangeColorArguments, remapChangeShapeArguments, remapIdArguments, remapMoveArguments, remapMoveShapeArguments, remapShapeArguments } from '../utils/remapUtils';
+import { Shape } from '../models/shapes/Shape';
+import { RectangleShapeStrategy } from '../models/shapes/strategies/RectangleShapeStrategy';
+import { LineShapeStrategy } from '../models/shapes/strategies/LineShapeStrategy';
+import { TriangleShapeStrategy } from '../models/shapes/strategies/TriangleShapeStrategy';
+import { CircleShapeStrategy } from '../models/shapes/strategies/CircleShapeStrategy';
+import { TextShapeStrategy } from '../models/shapes/strategies/TextShapeStrategy';
 
 enum Actions {
     ADD_SHAPE = 'addshape',
@@ -17,10 +18,12 @@ enum Actions {
     MOVE_SHAPE = 'moveshape',
     DELETE_SHAPE = 'deleteshape',
     CHANGE_COLOR = 'changecolor',
+    CHANGE_SHAPE = 'changeshape',
 }
 
 export class ShapesController {
     private _shapeHandlers: Record<ShapeType, (args: DetailedShapeOptions) => void>;
+    private _changeShapeHandlers: Record<ShapeType, (args: DetailedChangeShapeOptions) => void>;
     private _actionHandlers: Record<Actions, (args: string[]) => void>;
 
 
@@ -40,6 +43,24 @@ export class ShapesController {
             },
             [ShapeType.TEXT]: (args: ShapeOptions<TextOptions>) => {
                 this._addText(args);
+            },
+        };
+
+        this._changeShapeHandlers = {
+            [ShapeType.RECTANGLE]: (args: ChangeShapeOptions<RectangleOptions>) => {
+                this._changeToRectangle(args);
+            },
+            [ShapeType.CIRCLE]: (args: ChangeShapeOptions<CircleOptions>) => {
+                this._changeToCircle(args);
+            },
+            [ShapeType.TRIANGLE]: (args: ChangeShapeOptions<TriangleOptions>) => {
+                this._changeToTriangle(args);
+            },
+            [ShapeType.LINE]: (args: ChangeShapeOptions<LineOptions>) => {
+                this._changeToLine(args);
+            },
+            [ShapeType.TEXT]: (args: ChangeShapeOptions<TextOptions>) => {
+                this._changeToText(args);
             },
         };
 
@@ -67,6 +88,9 @@ export class ShapesController {
             },
             [Actions.DRAW_SHAPE]: (args: string[]) => {
                 this._drawShape(args);
+            },
+            [Actions.CHANGE_SHAPE]: (args: string[]) => {
+                this._changeShape(args);
             },
         }
     }
@@ -102,6 +126,12 @@ export class ShapesController {
         this._picture.deleteShape(id);
     }
 
+    private _changeShape(args: string[]): void {
+        const changeShapeArguments: DetailedChangeShapeOptions = remapChangeShapeArguments(args);
+
+        this._changeShapeHandlers[changeShapeArguments.type](changeShapeArguments);
+    }
+
     private _drawShape(args: string[]): void {
         const {id}: IdArguments = remapIdArguments(args);
 
@@ -123,31 +153,61 @@ export class ShapesController {
     private _addRectangle(rectangleArguments: ShapeOptions<RectangleOptions>): void {
         const {id, color, point, size} = rectangleArguments;
 
-        this._picture.addShape(new Rectangle(id, color, point, size));
+        this._picture.addShape(new Shape(id, new RectangleShapeStrategy(color, point, size)));
+    }
+
+    private _changeToRectangle(rectangleArguments: ChangeShapeOptions<RectangleOptions>): void {
+        const {id, point, size} = rectangleArguments;
+
+        this._picture.changeToRectangle(id, point, size);
+    }
+
+    private _changeToCircle(circleArguments: ChangeShapeOptions<CircleOptions>): void {
+        const {id, point, radius} = circleArguments;
+
+        this._picture.changeToCircle(id, point, radius);
+    }
+
+    private _changeToTriangle(triangleArguments: ChangeShapeOptions<TriangleOptions>): void {
+        const {id, point1, point2, point3} = triangleArguments;
+
+        this._picture.changeToTriangle(id, point1, point2, point3);
+    }
+
+    private _changeToLine(lineArguments: ChangeShapeOptions<LineOptions>): void {
+        const {id, point1, point2} = lineArguments;
+
+        this._picture.changeToLine(id, point1, point2);
+    }
+
+    private _changeToText(textArguments: ChangeShapeOptions<TextOptions>): void {
+        const {id, point, fontSize, data} = textArguments;
+
+        this._picture.changeToText(id, point, fontSize, data);
     }
 
     private _addTriangle(triangleArguments: ShapeOptions<TriangleOptions>): void {
         const {id, color, point1, point2, point3} = triangleArguments;
 
-        this._picture.addShape(new Triangle(id, color, point1, point2, point3));
+        this._picture.addShape(new Shape(id, new TriangleShapeStrategy(color, point1, point2, point3)));
     }
 
     private _addCircle(circleArguments: ShapeOptions<CircleOptions>): void {
         const {id, color, point, radius} = circleArguments;
 
-        this._picture.addShape(new Circle(id, color, point, radius));
+        this._picture.addShape(new Shape(id, new CircleShapeStrategy(color, point, radius)));
     }
 
     private _addLine(lineArguments: ShapeOptions<LineOptions>): void {
         const {id, color, point1, point2} = lineArguments;
 
-        this._picture.addShape(new Line(id, color, point1, point2));
+        this._picture.addShape(new Shape(id, new LineShapeStrategy(color, point1, point2)));
     }
 
     private _addText(textArguments: ShapeOptions<TextOptions>): void {
         const {id, color, point, fontSize, data} = textArguments;
 
-        this._picture.addShape(new Text(id, color, point, fontSize, data));
+        this._picture.addShape(new Shape(id, new TextShapeStrategy(color, point, fontSize, data)));
     }
 
     private _drawPicture(): void {

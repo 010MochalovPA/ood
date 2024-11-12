@@ -5,11 +5,16 @@ interface IShape {
     performDraw(canvas: ICanvas): void;
     performToString(): string
     performMove(dx: number, dy: number): void;
-    changeColor(color: string): void
+
+    set color(color: string)
+
+    get color(): string
+
+    set shapeStrategy(strategy: IShapeStrategy)
+
+    get shapeStrategy(): IShapeStrategy
 
     get id(): string
-    set shapeStrategy(strategy: IShapeStrategy)
-    get shapeStrategy(): IShapeStrategy
 }
 
 export {IShape}

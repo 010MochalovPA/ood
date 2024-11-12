@@ -1,6 +1,6 @@
 import { Duck } from "./Duck";
 import { createMinuetDanceBehavior } from "../behavior/dance/createMinuetDanceBehavior";
-import { createQuackBehavior } from "../behavior/quack/QuackBehavior";
+import { createQuackBehavior } from "../behavior/quack/createQuackBehavior";
 import { createFlyWithWingsBehavior } from "../behavior/fly/createFlyWithWingsBehavior";
 
 class RedHeadDuck extends Duck {

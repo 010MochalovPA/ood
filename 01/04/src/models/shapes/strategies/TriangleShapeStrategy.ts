@@ -23,7 +23,15 @@ class TriangleShapeStrategy implements IShapeStrategy {
     }
 
     public toString(): string {
-        return `${this._point1.x} ${this._point1.y} ${this._point2.x} ${this._point2.y} ${this._point3.x} ${this._point3.y}`;
+        return `triangle ${this._color} ${this._point1.x} ${this._point1.y} ${this._point2.x} ${this._point2.y} ${this._point3.x} ${this._point3.y}`;
+    }
+
+    get color(): string {
+        return this._color;
+    }
+ 
+    set color(color: string) {
+        this._color = color;
     }
 }
 
