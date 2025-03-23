@@ -1,32 +1,32 @@
-import { IBeverageStrategy } from "./IBeverageStrategy";
+import { BeverageStrategy } from "./BeverageStrategy";
 
-class SmallMilkshakeStrategy implements IBeverageStrategy {
+class SmallMilkshakeStrategy extends BeverageStrategy {
+    constructor() {
+        super(0);
+    }
+
     getDescription(): string {
         return "Small";
     }
-
-    getCost(): number {
-        return 0;
-    }
 }
 
-class MediumMilkshakeStrategy implements IBeverageStrategy {
+class MediumMilkshakeStrategy extends BeverageStrategy {
+    constructor() {
+        super(10);
+    }
+
     getDescription(): string {
         return "Medium";
     }
-
-    getCost(): number {
-        return 10;
-    }
 }
 
-class LargeMilkshakeStrategy implements IBeverageStrategy {
-    getDescription(): string {
-        return "Large";
+class LargeMilkshakeStrategy extends BeverageStrategy {
+    constructor() {
+        super(30);
     }
 
-    getCost(): number {
-        return 30;
+    getDescription(): string {
+        return "Large";
     }
 }
 
