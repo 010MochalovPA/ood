@@ -1,22 +1,22 @@
-import { IBeverageStrategy } from "./IBeverageStrategy";
+import { BeverageStrategy } from "./BeverageStrategy";
 
-class StandardPortionStrategy implements IBeverageStrategy {
+class StandardPortionStrategy extends BeverageStrategy {
+    constructor() {
+        super(0);
+    }
+
     getDescription(): string {
         return "Standard";
     }
-
-    getCost(): number {
-        return 0;
-    }
 }
 
-class DoublePortionStrategy implements IBeverageStrategy {
-    getDescription(): string {
-        return "Double";
+class DoublePortionStrategy extends BeverageStrategy {
+    constructor() {
+        super(40);
     }
 
-    getCost(): number {
-        return 40;
+    getDescription(): string {
+        return "Double";
     }
 }
 

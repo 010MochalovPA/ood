@@ -1,42 +1,42 @@
-import { IBeverageStrategy } from "./IBeverageStrategy";
+import { BeverageStrategy } from "./BeverageStrategy";
 
-class GreenTeaStrategy implements IBeverageStrategy {
+class GreenTeaStrategy extends BeverageStrategy {
+    constructor() {
+        super(0);
+    }
+
     getDescription(): string {
         return "Green Tea";
     }
-
-    getCost(): number {
-        return 0;
-    }
 }
 
-class BlackTeaStrategy implements IBeverageStrategy {
+class BlackTeaStrategy extends BeverageStrategy {
+    constructor() {
+        super(0);
+    }
+
     getDescription(): string {
         return "Black Tea";
     }
-
-    getCost(): number {
-        return 0;
-    }
 }
 
-class OolongTeaStrategy implements IBeverageStrategy {
+class OolongTeaStrategy extends BeverageStrategy {
+    constructor() {
+        super(0);
+    }
+
     getDescription(): string {
         return "Oolong Tea";
     }
-
-    getCost(): number {
-        return 0;
-    }
 }
 
-class HerbalTeaStrategy implements IBeverageStrategy {
-    getDescription(): string {
-        return "Herbal Tea";
+class HerbalTeaStrategy extends BeverageStrategy {
+    constructor() {
+        super(0);
     }
 
-    getCost(): number {
-        return 0;
+    getDescription(): string {
+        return "Herbal Tea";
     }
 }
 
