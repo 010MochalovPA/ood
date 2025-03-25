@@ -12,10 +12,11 @@ class PictureDraft {
     }
 
     getShape(index: number): Shape {
-        if (index < 0 || index >= this.#shapes.length) {
-            throw new Error("Index out of bounds");
+        if (this.#shapes[index]) {
+            return this.#shapes[index];
         }
-        return this.#shapes[index];
+
+        throw new Error("Index out of bounds");
     }
 }
 

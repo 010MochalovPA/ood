@@ -1,5 +1,4 @@
 import { IDesigner } from "../designer/IDesigner";
-import { Painter } from "../painter/Painter";
 import { HTMLCanvas } from "../canvas/HTMLCanvas";
 import { IPainter } from "../painter/IPainter";
 
