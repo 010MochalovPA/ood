@@ -20,7 +20,15 @@ class RectangleShapeStrategy implements IShapeStrategy {
     }
 
     public toString(): string {
-        return `${this._point.x} ${this._point.y} ${this._size.width} ${this._size.height}`
+        return `rectangle ${this._color} ${this._point.x} ${this._point.y} ${this._size.width} ${this._size.height}`;
+    }
+
+    get color(): string {
+        return this._color;
+    }
+ 
+    set color(color: string) {
+        this._color = color;
     }
 }
 

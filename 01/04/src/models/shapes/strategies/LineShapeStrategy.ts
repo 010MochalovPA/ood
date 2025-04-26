@@ -1,6 +1,6 @@
 import { IShapeStrategy } from "./IShapeStrategy";
 import { ICanvas } from "../../../gfx/ICanvas";
-import { Point, Size } from "../../../types";
+import { Point } from "../../../types";
 import { movePoint } from "../../../utils/shapeUtils";
 
 class LineShapeStrategy implements IShapeStrategy {
@@ -21,7 +21,15 @@ class LineShapeStrategy implements IShapeStrategy {
     }
 
     public toString(): string {
-        return `${this._point1.x} ${this._point1.y} ${this._point2.x} ${this._point2.y}`;
+        return `line ${this._color} ${this._point1.x} ${this._point1.y} ${this._point2.x} ${this._point2.y}`;
+    }
+
+    get color(): string {
+        return this._color;
+    }
+ 
+    set color(color: string) {
+        this._color = color;
     }
 }
 
