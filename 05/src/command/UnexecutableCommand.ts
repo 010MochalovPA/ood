@@ -16,14 +16,19 @@ abstract class UnexecutableCommand implements ICommand {
         if (!this._executed) {
             return;
         }
-        
+
         this.doUnexecute();
         this._executed = false;
     }
 
-    abstract doExecute(): void;
-    abstract doUnexecute(): void;
-    abstract compoundWith(command: ICommand): boolean;
+    tryMerge(command: UnexecutableCommand): boolean {
+        return false;
+    }
+    
+    discard(): void {}
+
+    protected abstract doExecute(): void;
+    protected abstract doUnexecute(): void;
 }
 
 export {

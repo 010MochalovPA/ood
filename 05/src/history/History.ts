@@ -1,80 +1,80 @@
-import { IUnexecutableCommand } from "../command/IUnexecutableCommand"
+import { IUnexecutableCommand } from "../command/IUnexecutableCommand";
+
+const HISTORY_LIMIT = 10;
 
 class History {
-    private _commands: IUnexecutableCommand[] = [];
-    private _position: number = -1;
+    private _undos: IUnexecutableCommand[] = [];
+    private _redos: IUnexecutableCommand[] = [];
 
-    addAndExecuteCommand(command: IUnexecutableCommand) {
-        if (this._shouldClearRedoCommands()) {
-            this._clearRedoCommands();
+    addAndExecuteCommand(command: IUnexecutableCommand): void {
+        if (!this._tryMergeWithLastUndo(command)) {
+            this._pushUndo(command);
         }
 
-        if (this._isHistoryFull()) {
-            this._trimOldestCommand();
-        }
+        this._clearRedoBranch();
+        command.execute();
+    }
 
-        if (this._tryCompoundWithLast(command)) {
-            command.execute()
+    undo(): void {
+        const command = this._undos.pop();
+        if (command === undefined) {
             return;
         }
 
-        this._commands.push(command);
-        this._position++;
-
-        this._commands[this._position].execute();
+        command.unexecute();
+        this._redos.push(command);
     }
 
-    undo() {
-        if (this.canUndo()) {
-            this._commands[this._position].unexecute();
-            this._position--;
-        }
-    }
-
-    redo() {
-        if (this.canRedo()) {
-            this._position++;
-            this._commands[this._position].execute();
+    redo(): void {
+        const command = this._redos.pop();
+        if (command === undefined) {
+            return;
         }
 
-        return false;
+        command.execute();
+        this._undos.push(command);
     }
 
     canUndo(): boolean {
-        return this._position >= 0;
+        return this._undos.length > 0;
     }
 
     canRedo(): boolean {
-        return this._position < this._commands.length - 1;
+        return this._redos.length > 0;
     }
 
-    private _shouldClearRedoCommands(): boolean {
-        return this._position < this._commands.length - 1;
-    }
-
-    private _clearRedoCommands() {
-        this._commands = this._commands.slice(0, this._position + 1);
-    }
-
-    private _isHistoryFull(): boolean {
-        return this._commands.length >= 100;
-    }
-
-    private _trimOldestCommand() {
-        this._commands.shift();
-        this._position--;
-    }
-
-    private _tryCompoundWithLast(command: IUnexecutableCommand): boolean {
-        if (this._position < 0) {
+    private _tryMergeWithLastUndo(command: IUnexecutableCommand): boolean {
+        if (this.canRedo()) {
             return false;
         }
 
-        const lastCommand = this._commands[this._position];
-        return lastCommand.compoundWith(command);
+        const top = this._undos[this._undos.length - 1];
+        
+        if (top === undefined) {
+            return false;
+        }
+
+        return top.tryMerge(command);
+    }
+
+    private _pushUndo(command: IUnexecutableCommand): void {
+        this._undos.push(command);
+
+        if (this._undos.length > HISTORY_LIMIT) {
+            const dropped = this._undos.shift();
+            dropped?.discard();
+        }
+    }
+
+    private _clearRedoBranch(): void {
+        for (const command of this._redos) {
+            command.discard();
+        }
+
+        this._redos.length = 0;
     }
 }
 
 export {
     History,
-}
+};

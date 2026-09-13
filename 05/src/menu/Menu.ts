@@ -1,29 +1,31 @@
-import { MenuItem } from "../types";
+import { HelpMenuCommand } from "./commands/HelpMenuCommand";
+import { IMenuCommand } from "./commands/IMenuCommand";
 
 class Menu {
-    private _commands: Map<string, MenuItem>;
+    private _commands: IMenuCommand[] = [];
 
-    constructor(commands: Map<string, MenuItem>) {
-        this._commands = commands;
+    constructor(commands: IMenuCommand[]) {
+        this._commands = [...commands];
+
+        this._commands.push(new HelpMenuCommand(this));
     }
 
-    executeCommand(command: string, params: string = ""): void {
-        const item = this._getCommand(command);
+    executeCommand(name: string, args: string): void {
+        const command = this._findCommand(name);
 
-        if (!item) {
-            console.log(`Command "${command}" not found`);
-            return;
+        if (!command) {
+            throw new Error(`Command "${name}" not found`);
         }
 
-        item.createCommand(params).execute();
+        command.execute(args);
     }
 
-    getCommands(): Map<string, MenuItem> {
+    getCommands(): IMenuCommand[] {
         return this._commands;
     }
 
-    private _getCommand(command: string): MenuItem {
-        return this._commands.get(command);
+    private _findCommand(commandName: string): IMenuCommand | undefined {
+        return this._commands.find(cmd => cmd.getName() === commandName);
     }
 }
 

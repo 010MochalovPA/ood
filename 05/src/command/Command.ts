@@ -1,11 +1,11 @@
 import { ICommand } from "./ICommand";
 
-abstract class Command implements ICommand {
-    execute(): void {
-        this.doExecute();
+abstract class Command<T = void> implements ICommand<T> {
+    execute(args?: T): void {
+        this.doExecute(args);
     }
 
-    abstract doExecute(): void;
+    abstract doExecute(args?: T): void;
 }
 
 export {

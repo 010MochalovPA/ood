@@ -1,22 +1,24 @@
 import { createInterface } from 'readline';
-import { InsertParagraphApplicationCommand } from "./commands/InsertParagraphApplicationCommand";
 import { DocumentController } from "../document/DocumentController";
 import { Document } from "../document/Document";
 import { History } from "../history/History";
-import { MenuItem } from "../types";
-import { ICommand } from "../command/ICommand";
-import { CommandDescriptions, CommandKey } from '../command-descriptions';
-import { InsertImageApplicationCommand } from './commands/InsertImageApplicationCommand';
-import { HelpApplicationCommand } from './commands/HelpApplicationCommand';
 import { Menu } from '../menu/Menu';
-import { ListApplicationCommand } from './commands/ListApplicationCommand';
-import { SetTitleApplicationCommand } from './commands/SetTitleApplicationCommand';
-import { UndoApplicationCommand } from './commands/UndoApplicationCommand';
-import { RedoApplicationCommand } from './commands/RedoApplicationCommand';
+import { InsertParagraphMenuCommand } from '../menu/commands/InsertParagraphMenuCommand';
+import { IMenuCommand } from '../menu/commands/IMenuCommand';
+import { ListMenuCommand } from '../menu/commands/ListMenuCommand';
+import { SetTitleMenuCommand } from '../menu/commands/SetTitleMenuCommand';
+import { DeleteItemMenuCommand } from '../menu/commands/DeleteItemMenuCommand';
+import { UndoMenuCommand } from '../menu/commands/UndoMenuCommand';
+import { RedoMenuCommand } from '../menu/commands/RedoMenuCommand';
+import { FileStorage } from '../storage/FileStorage';
+import { InsertImageMenuCommand } from '../menu/commands/InsertImageMenuCommand';
+import { ResizeImageMenuCommand } from '../menu/commands/ResizeImageMenuCommand';
+import { SaveMenuCommand } from '../menu/commands/SaveMenuCommand';
 
 class Application {
     private _documentController: DocumentController;
     private _menu: Menu;
+    private _storage: FileStorage = new FileStorage(process.cwd());
 
     private _readLine = createInterface({
         input: process.stdin,
@@ -28,98 +30,70 @@ class Application {
         this._documentController = new DocumentController({
             document: new Document(),
             history: new History(),
+            storage: this._storage,
         });
 
-        this._menu = new Menu(this._createMenuItems());
+        const commands: IMenuCommand[] = [
+            new InsertParagraphMenuCommand(this._documentController),
+            new SetTitleMenuCommand(this._documentController),
+            new ListMenuCommand(this._documentController),
+            new UndoMenuCommand(this._documentController),
+            new RedoMenuCommand(this._documentController),
+            new DeleteItemMenuCommand(this._documentController),
+            new InsertImageMenuCommand(this._documentController),
+            new ResizeImageMenuCommand(this._documentController),
+            new SaveMenuCommand(this._documentController),
+        ];
+
+        this._menu = new Menu(commands);
     }
 
     async run() {
         this._readLine.prompt();
 
         this._readLine
-            .on('line', (command) => {
-                this._executeCommand(command);
+            .on('line', (line: string) => {
+                try {
+                    this._executeLine(line);
+                } catch (error) {
+                    console.error((error as Error).message);
+                }
                 this._readLine.prompt();
             })
             .on('close', () => {
+                this._cleanup();
                 process.exit(0);
             });
     }
 
-    private _executeCommand(command: string): void {
-        const input = command.trim();
-
-        const [commandName, ...argsArray] = input.split(' ');
-        const args = argsArray.join(' ');
-
-        this._menu.executeCommand(commandName, args);
+    private _cleanup(): void {
+        this._storage.clear();
     }
 
-    private _createMenuItems(): Map<string, MenuItem> {
-        return new Map([
-            [
-                CommandKey.InsertParagraph, {
-                    description: CommandDescriptions[CommandKey.InsertParagraph],
-                    createCommand: (args: string): ICommand => {
-                        return new InsertParagraphApplicationCommand(this._documentController, args);
-                    }
-                },
-            ],
-            [
-                CommandKey.InsertImage,
-                {
-                    description: CommandDescriptions[CommandKey.InsertImage],
-                    createCommand: (args: string): ICommand => {
-                        return new InsertImageApplicationCommand(this._documentController, args);
-                    }
-                },
-            ],
-            [
-                CommandKey.Help,
-                {
-                    description: CommandDescriptions[CommandKey.Help],
-                    createCommand: (args: string): ICommand => {
-                        return new HelpApplicationCommand(this._menu.getCommands());
-                    }
-                },
-            ],
-            [
-                CommandKey.SetTitle,
-                {
-                    description: CommandDescriptions[CommandKey.SetTitle],
-                    createCommand: (args: string): ICommand => {
-                        return new SetTitleApplicationCommand(this._documentController, args);
-                    }
-                },
-            ],
-            [
-                CommandKey.List,
-                {
-                    description: CommandDescriptions[CommandKey.List],
-                    createCommand: (args: string): ICommand => {
-                        return new ListApplicationCommand(this._documentController);
-                    }
-                },
-            ],
-            [
-                CommandKey.Undo,
-                {
-                    description: CommandDescriptions[CommandKey.Undo],
-                    createCommand: (args: string): ICommand => {
-                        return new UndoApplicationCommand(this._documentController);
-                    }
-                },
-            ],
-            [
-                CommandKey.Redo,
-                {
-                    description: CommandDescriptions[CommandKey.Redo],
-                    createCommand: (args: string): ICommand => {
-                        return new RedoApplicationCommand(this._documentController);
-                    }
-                },
-            ]
-        ])
+    private _executeLine(line: string): void {
+        const parsed = this._splitInput(line);
+
+        if (!parsed) {
+            return;
+        }
+
+        this._menu.executeCommand(parsed.name, parsed.args);
+    }
+
+    private _splitInput(input: string): { name: string; args: string } | null {
+        const trimmed = input.trim();
+
+        if (!trimmed) {
+            return null;
+        }
+
+        const parts = trimmed.split(/\s+/);
+        const [name, ...argsArray] = parts;
+
+        return {
+            name,
+            args: argsArray.join(' '),
+        };
     }
 }
 

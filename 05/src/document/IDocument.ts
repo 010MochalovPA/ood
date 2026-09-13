@@ -1,26 +1,17 @@
 import { DocumentItem, DocumentItemList } from "../types"
+import { Paragraph } from "./items/Paragraph";
+import { Image } from "./items/Image";
 
 interface IDocument {
-    insertParagraph(text: string, position?: number): void;
-    insertImage(path: string, width: number, height: number, position?: number): void;
-
+    insertParagraph(paragraph: Paragraph, position: number): void;
+    insertImage(image: Image, position: number): void
     getItemsCount(): number;
     getItems(): DocumentItemList;
-    getItem(index: number): DocumentItem;
-
-    deleteItem(index: number): void;
+    getItem(position: number): DocumentItem;
+    deleteItem(position: number): void;
+    insertItem(position: number, item: DocumentItem): void;
     getTitle(): string;
     setTitle(title: string): void;
-    
-    canUndo(): boolean;
-    canRedo(): boolean;
-
-    undo(): void;
-    redo(): void;
-
-    canInsert(index: number): boolean;
-
-    save(path: string): void;
 }
 
 export {

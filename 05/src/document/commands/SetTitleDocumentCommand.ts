@@ -5,29 +5,34 @@ class SetTitleDocumentCommand extends UnexecutableCommand {
     private _document: IDocument;
     private _newTitle: string;
     private _oldTitle: string;
-    
+
+    private _chained: UnexecutableCommand | null = null;
+
     constructor(document: IDocument, title: string) {
         super();
-
         this._document = document;
         this._newTitle = title;
-        this._oldTitle = this._document.getTitle();
-    }
-    
-    doExecute(): void {
-        this._document.setTitle(this._newTitle);
+        this._oldTitle = document.getTitle();
     }
 
-    doUnexecute(): void {
+    protected doExecute(): void {
+        this._document.setTitle(this._newTitle);
+        
+        this._chained?.execute();
+    }
+
+    protected doUnexecute(): void {
+        this._chained?.unexecute();
+
         this._document.setTitle(this._oldTitle);
     }
 
-    compoundWith(command: UnexecutableCommand): boolean {
+    tryMerge(command: UnexecutableCommand): boolean {
         if (!(command instanceof SetTitleDocumentCommand)) {
             return false;
         }
-        
-        this._newTitle = command._newTitle;
+
+        this._chained = command;
         return true;
     }
 }

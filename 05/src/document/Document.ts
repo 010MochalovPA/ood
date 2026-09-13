@@ -1,33 +1,23 @@
 import { DocumentItem, DocumentItemList } from "../types";
 import { IDocument } from "./IDocument";
 import { Paragraph } from "./items/Paragraph";
-
-const defaultTitle = 'New title';
+import { Image } from "./items/Image";
+import { escapeHtml } from "../menu/utils/escapeHtml";
 
 class Document implements IDocument {
     private _items: DocumentItemList = [];
     private _title: string;
 
-    constructor(title: string = defaultTitle) {
+    constructor(title: string = 'New title') {
         this._title = title;
     }
 
-    insertParagraph(text: string, position?: number): void {
-        const paragraph = new Paragraph(text);
-
-        const index = position ?? this._items.length;
-
-        if (this._validatePosition(index)){
-            this._items.splice(index, 0, paragraph);
-        };
+    insertParagraph(paragraph: Paragraph, position: number): void {
+        this.insertItem(position, paragraph);
     }
 
-    insertImage(path: string, width: number, height: number, position?: number): void {
-
-    }
-
-    canInsert(index: number): boolean {
-        return index <= this._items.length;
+    insertImage(image: Image, position: number): void {
+        this.insertItem(position, image);
     }
 
     getItemsCount(): number {
@@ -38,24 +28,21 @@ class Document implements IDocument {
         return this._items;
     }
 
-    getItem(position: number): DocumentItem | null {
-        if (this._validatePosition(position)){
-            return this._items[position];
-        };
-
-        return null;
+    getItem(index: number): DocumentItem {
+        this._validateIndex(index);
+        return this._items[index];
     }
 
-    deleteItem(position?: number): void {
-        if (this._items.length === 0) {
-            console.log("Cannot delete item from an empty document!");
-            return;
-        }
+    deleteItem(position: number): void {
+        this._validateIndex(position);
 
-        const pos = position ?? this._items.length - 1;
-        if (this._validatePosition(pos)){
-            this._items.splice(pos, 1);
-        };
+        this._items.splice(position, 1);
+    }
+
+    insertItem(position: number, item: DocumentItem): void {
+        this._validatePosition(position)
+
+        this._items.splice(position, 0, item);
     }
 
     getTitle(): string {
@@ -66,33 +53,16 @@ class Document implements IDocument {
         this._title = title;
     }
 
-    canUndo(): boolean {
-        return true;
-    }
-
-    canRedo(): boolean {
-        return true;
-    }
-
-    undo(): void {
-
-    }
-
-    redo(): void {
-
-    }
-
-    save(path: string): void {
-
-    }
-
-    private _validatePosition(position?: number): boolean {
-        if (position && (position < 0 || position >= this._items.length)) {
-            console.log(`Index ${position} is out of range!`);
-            return false;
+    private _validatePosition(position: number): void {
+        if (position < 0 || position > this._items.length) {
+            throw new Error(`Position ${position} is out of range. Must be between 0 and ${this._items.length}`);
         }
+    }
 
-        return true;
+    private _validateIndex(index: number): void {
+        if (index < 0 || index >= this._items.length) {
+            throw new Error(`Index ${index} is out of range. Must be between 0 and ${this._items.length - 1}`);
+        }
     }
 }
 

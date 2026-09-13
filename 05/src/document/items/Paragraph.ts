@@ -1,8 +1,10 @@
+import { escapeHtml } from '../../menu/utils/escapeHtml';
+import { FileStorage } from '../../storage/FileStorage';
 import { DocumentItemType } from '../../types';
-import { AbstractDocumentItem } from './AbstractDocumentItem';
+import { BaseDocumentItem } from './BaseDocumentItem';
 
-class Paragraph extends AbstractDocumentItem {
-    protected readonly _type: DocumentItemType = DocumentItemType.PARAGRAPH;
+class Paragraph extends BaseDocumentItem {
+    protected readonly _type: DocumentItemType = 'paragraph';
     private _text: string;
 
     constructor(text: string) {
@@ -20,12 +22,15 @@ class Paragraph extends AbstractDocumentItem {
     }
 
     render(): string {
-        return this._text;
+        return `<p>${escapeHtml(this._text)}</p>`;
     }
 
     toString(): string {
-        return this._text;
+        return `[Paragraph] ${this._text}`;
     }
+
+    acquireResource(storage: FileStorage): void { }
+    releaseResource(storage: FileStorage): void { }
 }
 
 export {
