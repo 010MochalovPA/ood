@@ -2,7 +2,6 @@ import { DocumentItem, DocumentItemList } from "../types";
 import { IDocument } from "./IDocument";
 import { Paragraph } from "./items/Paragraph";
 import { Image } from "./items/Image";
-import { escapeHtml } from "../menu/utils/escapeHtml";
 
 class Document implements IDocument {
     private _items: DocumentItemList = [];
@@ -25,7 +24,7 @@ class Document implements IDocument {
     }
 
     getItems(): DocumentItemList {
-        return this._items;
+        return [...this._items];
     }
 
     getItem(index: number): DocumentItem {

@@ -1,4 +1,3 @@
-// === src/menu/commands/HelpMenuCommand.ts ===
 import { MenuCommand } from "./MenuCommand";
 import { Menu } from "../Menu";
 

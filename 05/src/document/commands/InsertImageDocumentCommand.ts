@@ -21,21 +21,21 @@ class InsertImageDocumentCommand extends UnexecutableCommand {
         this._position = position;
         this._storage = storage;
 
-        this._image.acquireResource(storage);   // команда держит, пока в истории
+        this._image.acquireResource(storage);
     }
 
     protected doExecute(): void {
         this._document.insertItem(this._position, this._image);
-        this._image.acquireResource(this._storage);   // элемент в документе
+        this._image.acquireResource(this._storage);
     }
 
     protected doUnexecute(): void {
         this._document.deleteItem(this._position);
-        this._image.releaseResource(this._storage);   // элемента нет
+        this._image.releaseResource(this._storage);
     }
 
     discard(): void {
-        this._image.releaseResource(this._storage);   // команда покинула историю
+        this._image.releaseResource(this._storage);
     }
 }
 

@@ -14,6 +14,7 @@ import { FileStorage } from '../storage/FileStorage';
 import { InsertImageMenuCommand } from '../menu/commands/InsertImageMenuCommand';
 import { ResizeImageMenuCommand } from '../menu/commands/ResizeImageMenuCommand';
 import { SaveMenuCommand } from '../menu/commands/SaveMenuCommand';
+import { ReplaceTextMenuCommand } from '../menu/commands/ReplaceTextMenuCommand';
 
 class Application {
     private _documentController: DocumentController;
@@ -42,6 +43,7 @@ class Application {
             new DeleteItemMenuCommand(this._documentController),
             new InsertImageMenuCommand(this._documentController),
             new ResizeImageMenuCommand(this._documentController),
+            new ReplaceTextMenuCommand(this._documentController),
             new SaveMenuCommand(this._documentController),
         ];
 

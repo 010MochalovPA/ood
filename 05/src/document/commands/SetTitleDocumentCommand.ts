@@ -5,8 +5,7 @@ class SetTitleDocumentCommand extends UnexecutableCommand {
     private _document: IDocument;
     private _newTitle: string;
     private _oldTitle: string;
-
-    private _chained: UnexecutableCommand | null = null;
+    private _chain: SetTitleDocumentCommand[] = [];
 
     constructor(document: IDocument, title: string) {
         super();
@@ -17,13 +16,15 @@ class SetTitleDocumentCommand extends UnexecutableCommand {
 
     protected doExecute(): void {
         this._document.setTitle(this._newTitle);
-        
-        this._chained?.execute();
+        for (const c of this._chain) {
+            c.execute();
+        }
     }
 
     protected doUnexecute(): void {
-        this._chained?.unexecute();
-
+        for (let i = this._chain.length - 1; i >= 0; i--) {
+            this._chain[i].unexecute();
+        }
         this._document.setTitle(this._oldTitle);
     }
 
@@ -31,12 +32,11 @@ class SetTitleDocumentCommand extends UnexecutableCommand {
         if (!(command instanceof SetTitleDocumentCommand)) {
             return false;
         }
-
-        this._chained = command;
+        this._chain.push(command);
         return true;
     }
 }
 
 export {
     SetTitleDocumentCommand,
-}
+};

@@ -7,7 +7,7 @@ class ResizeImageDocumentCommand extends UnexecutableCommand {
     private _newHeight: number;
     private _oldWidth: number;
     private _oldHeight: number;
-    private _chained: UnexecutableCommand | null = null;
+    private _chain: ResizeImageDocumentCommand[] = [];
 
     constructor(image: Image, width: number, height: number) {
         super();
@@ -24,11 +24,15 @@ class ResizeImageDocumentCommand extends UnexecutableCommand {
 
     protected doExecute(): void {
         this._image.resize(this._newWidth, this._newHeight);
-        this._chained?.execute();
+        for (const c of this._chain) {
+            c.execute();
+        }
     }
 
     protected doUnexecute(): void {
-        this._chained?.unexecute();
+        for (let i = this._chain.length - 1; i >= 0; i--) {
+            this._chain[i].unexecute();
+        }
         this._image.resize(this._oldWidth, this._oldHeight);
     }
 
@@ -36,12 +40,10 @@ class ResizeImageDocumentCommand extends UnexecutableCommand {
         if (!(command instanceof ResizeImageDocumentCommand)) {
             return false;
         }
-
         if (command.getImage() !== this.getImage()) {
             return false;
         }
-
-        this._chained = command;
+        this._chain.push(command);
         return true;
     }
 }

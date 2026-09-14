@@ -1,22 +1,24 @@
-function parsePosition(str: string, maxPosition: number): number {
+const MIN_POSITION = 1;
+
+function parsePosition(str: string, count: number): number {
     const num = Number(str);
-    if (!Number.isInteger(num) || num < 0) {
-        throw new Error('Position must be a non-negative integer');
+
+    if (!Number.isInteger(num) || num < MIN_POSITION) {
+        throw new Error('Position must be a positive integer');
     }
-    if (num > maxPosition) {
-        throw new Error(`Position must not exceed ${maxPosition}`);
+
+    if (num > count) {
+        throw new Error(`Position ${num} is out of range (document has ${count} items)`);
     }
-    return num;
+
+    return num - 1;
 }
 
-function parsePositionOrEnd(str: string, endPosition: number): number {
+function parsePositionOrEnd(str: string, count: number): number {
     if (str.toLowerCase() === 'end') {
-        return endPosition;
+        return count;
     }
-    return parsePosition(str, endPosition);
+    return parsePosition(str, count);
 }
 
-export {
-    parsePosition,
-    parsePositionOrEnd,
-};
+export { parsePosition, parsePositionOrEnd };

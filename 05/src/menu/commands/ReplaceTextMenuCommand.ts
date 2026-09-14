@@ -23,10 +23,10 @@ class ReplaceTextMenuCommand extends MenuCommand {
 
     protected _parseArgs(args: string): ReplaceTextArgs {
         const [position, ...text] = splitArgs(args, 2);
-        const maxPosition = this._documentController.getItemsCount() - 1;
+        const count = this._documentController.getItemsCount();
 
         return {
-            position: parsePosition(position, maxPosition),
+            position: parsePosition(position, count),
             text: parseText(text.join(' ')),
         };
     }

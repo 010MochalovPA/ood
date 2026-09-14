@@ -5,7 +5,7 @@ class ReplaceTextDocumentCommand extends UnexecutableCommand {
     private _paragraph: Paragraph;
     private _newText: string;
     private _oldText: string;
-    private _chained: UnexecutableCommand | null = null;
+    private _chain: ReplaceTextDocumentCommand[] = [];
 
     constructor(paragraph: Paragraph, text: string) {
         super();
@@ -20,11 +20,15 @@ class ReplaceTextDocumentCommand extends UnexecutableCommand {
 
     protected doExecute(): void {
         this._paragraph.text = this._newText;
-        this._chained?.execute();
+        for (const c of this._chain) {
+            c.execute();
+        }
     }
 
     protected doUnexecute(): void {
-        this._chained?.unexecute();
+        for (let i = this._chain.length - 1; i >= 0; i--) {
+            this._chain[i].unexecute();
+        }
         this._paragraph.text = this._oldText;
     }
 
@@ -32,12 +36,10 @@ class ReplaceTextDocumentCommand extends UnexecutableCommand {
         if (!(command instanceof ReplaceTextDocumentCommand)) {
             return false;
         }
-
         if (command.getParagraph() !== this.getParagraph()) {
             return false;
         }
-
-        this._chained = command;
+        this._chain.push(command);
         return true;
     }
 }

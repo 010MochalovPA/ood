@@ -1,6 +1,6 @@
 import { DocumentController } from "../../document/DocumentController";
 import { DeleteItemArgs } from "../../document/types";
-import { parseIndex } from "../utils/parseIndex";
+import { parsePosition } from "../utils/parsePosition";
 import { splitArgs } from "../utils/splitArgs";
 import { MenuCommand } from "./MenuCommand";
 
@@ -22,9 +22,10 @@ class DeleteItemMenuCommand extends MenuCommand {
 
     protected _parseArgs(args: string): DeleteItemArgs {
         const [position] = splitArgs(args, 1);
+        const count = this._documentController.getItemsCount();
 
         return {
-            position: parseIndex(position, this._documentController.getItemsCount()),
+            position: parsePosition(position, count),
         };
     }
 }

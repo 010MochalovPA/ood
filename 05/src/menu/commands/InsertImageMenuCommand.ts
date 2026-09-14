@@ -24,7 +24,6 @@ class InsertImageMenuCommand extends MenuCommand {
 
     protected _parseArgs(args: string): InsertImageArgs {
         const [position, width, height, ...pathParts] = splitArgs(args, 4);
-
         const count = this._documentController.getItemsCount();
 
         return {

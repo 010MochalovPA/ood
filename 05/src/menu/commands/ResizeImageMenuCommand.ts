@@ -23,10 +23,10 @@ class ResizeImageMenuCommand extends MenuCommand {
 
     protected _parseArgs(args: string): ResizeImageArgs {
         const [position, width, height] = splitArgs(args, 3);
-        const maxPosition = this._documentController.getItemsCount() - 1;
+        const count = this._documentController.getItemsCount();
 
         return {
-            position: parsePosition(position, maxPosition),
+            position: parsePosition(position, count),
             width: parseImageSize(width),
             height: parseImageSize(height),
         };

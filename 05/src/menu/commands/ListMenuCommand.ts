@@ -16,17 +16,12 @@ class ListMenuCommand extends MenuCommand {
     doExecute(): void {
         const title = this._documentController.getTitle();
         const items = this._documentController.getItems();
-        
-        console.log(title);
-        
-        if (items.length) {
-            items.forEach((item, index) => {
-                console.log(`${index + 1}. ${item.toString()}`)
-            })
-        }
-        else {
-            console.log('Document is empty')
-        }
+
+        console.log(`Title: ${title}`);
+
+        items.forEach((item, index) => {
+            console.log(`${index + 1}. ${item.toString()}`);
+        });
     }
 }
 

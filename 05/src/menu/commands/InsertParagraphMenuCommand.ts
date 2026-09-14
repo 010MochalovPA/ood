@@ -23,9 +23,10 @@ class InsertParagraphMenuCommand extends MenuCommand {
 
     protected _parseArgs(args: string): InsertParagraphArgs {
         const [position, ...text] = splitArgs(args, 2);
+        const count = this._documentController.getItemsCount();
 
         return {
-            position: parsePositionOrEnd(position, this._documentController.getItemsCount()),
+            position: parsePositionOrEnd(position, count),
             text: parseText(text.join(' ')),
         };
     }
